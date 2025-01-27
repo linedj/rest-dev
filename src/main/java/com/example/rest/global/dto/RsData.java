@@ -1,4 +1,4 @@
-package com.example.rest.global;
+package com.example.rest.global.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,6 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class RsData {
-    private String msg;
     private String code;
+    private String msg;
 }
