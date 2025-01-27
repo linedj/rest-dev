@@ -42,7 +42,7 @@ public class ApiV1PostController {
 
         Post post = postService.getItem(id).get();
 
-        return new RsData<> (
+        return new RsData<>(
                 "200-1",
                 "글 조회가 완료되었습니다.",
                 new PostDto(post)
@@ -65,27 +65,23 @@ public class ApiV1PostController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity modify(@PathVariable long id, @RequestBody @Valid ModifyReqBody body) {
+    public RsData<Void> modify(@PathVariable long id, @RequestBody @Valid ModifyReqBody body) {
 
         Post post = postService.getItem(id).get();
         postService.modify(post, body.title(), body.content());
-
-        return ResponseEntity
-                .noContent()
-                .build();
-
-//        return new RsData<>(
-//                "200-1",
-//                "%d번 글 수정이 완료되었습니다.".formatted(id),
-//                null
-//        );
+        return new RsData<>(
+                "200-1",
+                "%d번 글 수정이 완료되었습니다.".formatted(id),
+                null
+        );
     }
 
 
     record WriteReqBody(@NotBlank @Length(min = 3) String title, @NotBlank @Length(min = 3) String content) {
     }
 
-    record WriteResBody(long id, long totalCount){}
+    record WriteResBody(long id, long totalCount) {
+    }
 
     @PostMapping
     public ResponseEntity<RsData<WriteResBody>> write(@RequestBody @Valid WriteReqBody body) {
@@ -103,7 +99,11 @@ public class ApiV1PostController {
                                 )
                         )
                 );
+    }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
     }
 
 }
