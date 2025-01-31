@@ -17,23 +17,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<RsData<Void>> handle(NoSuchElementException e) {
 
+        // 개발 모드에서만 작동되도록.
         if(AppConfig.isNotProd()) e.printStackTrace();
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(new RsData<>(
-                    "404-1",
-                    "해당 데이터가 존재하지 않습니다."
-                )
-        );
+                .body(
+                        new RsData<>(
+                                "404-1",
+                                "해당 데이터가 존재하지 않습니다"
+                        )
+                );
     }
 
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RsData<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
+    public ResponseEntity<RsData<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 
         String message = e.getBindingResult().getFieldErrors()
                 .stream()
-                .map(fe->fe.getField() + " : " + fe.getCode() + " : " + fe.getDefaultMessage())
+                .map(fe -> fe.getField() + " : " + fe.getCode() + " : "  + fe.getDefaultMessage())
                 .sorted()
                 .collect(Collectors.joining("\n"));
 
@@ -47,18 +50,21 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<RsData<Void>> IllegalArgumentExceptionHandle(RuntimeException ex){
 
+    @ExceptionHandler(ServiceException.class)
+    public ResponseEntity<RsData<Void>> ServiceExceptionHandle(ServiceException ex) {
+
+        // 개발 모드에서만 작동되도록.
         if(AppConfig.isNotProd()) ex.printStackTrace();
 
         return ResponseEntity
-                .status(HttpStatus.CONFLICT)
+                .status(ex.getStatusCode())
                 .body(
                         new RsData<>(
-                                "409-1",
+                                ex.getCode(),
                                 ex.getMessage()
                         )
                 );
     }
+
 }
