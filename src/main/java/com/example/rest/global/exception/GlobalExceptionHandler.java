@@ -47,4 +47,18 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<RsData<Void>> IllegalArgumentExceptionHandle(IllegalArgumentException ex){
+
+        if(AppConfig.isNotProd()) ex.printStackTrace();
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(
+                        new RsData<>(
+                                "409-1",
+                                ex.getMessage()
+                        )
+                );
+    }
 }
